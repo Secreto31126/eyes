@@ -1,0 +1,17 @@
+<svg width="15px" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+    <g>
+        <ellipse stroke="#000" cx="5" cy="5" rx="4" ry="4" fill="none"/>
+        <ellipse stroke="#000" cx="6" cy="5" rx="1" ry="1">
+            <animate
+                attributeName="cx"
+                values="5;6;5;4;5"
+                dur="3s"
+                repeatCount="indefinite" />
+            <animate
+                attributeName="cy"
+                values="4;5;6;5;4"
+                dur="3s"
+                repeatCount="indefinite" />
+        </ellipse>
+    </g>
+</svg>
