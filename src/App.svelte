@@ -22,16 +22,25 @@
         mouse.y = event.touches[0].clientY;
     }
 
-    let trigger = false;
+    let trigger: boolean = false;
     function reload(): void {
         trigger = !trigger;
         $loaded = false;
         $active = 0;
     }
 
-    let amount = 0;
+    let amount: number = 0;
+    let added: boolean = false;
+
     function more(): void {
+        added = true;
         amount++;
+        reload();
+    }
+    
+    function less(): void {
+        added = false;
+        amount--;
         reload();
     }
 
@@ -45,7 +54,7 @@
     {#key trigger}
         <div>
             {#each Array(amount) as _, index}
-                <Eye {mouse} {index} open={amount === index + 1} />
+                <Eye {mouse} {index} open={added && amount === index + 1} on:pop={less} />
             {/each}
         </div>
     {/key}

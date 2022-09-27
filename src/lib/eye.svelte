@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+    import { onMount, createEventDispatcher } from "svelte";
     import { active, loaded } from "../stores";
 
     interface Coordinates {
@@ -39,10 +39,19 @@
 
     $: if ($loaded) getCenter();
     $: rotation = Math.atan2(mouse.y - center.y, mouse.x - center.x);
+
+    let plop: boolean = false;
+    const dispatch = createEventDispatcher();
+    function pop(): void {
+        plop = true;
+        setTimeout(() => {
+            dispatch("pop");
+        }, 0.1 * 1000);
+    }
 </script>
 
-<div class:blink class:open>
-    <img bind:this={rotator} src="/eye.svg" alt="Eye" style="--rotation: {rotation}rad;"/>
+<div class:blink class:open class:plop>
+    <img bind:this={rotator} on:click={pop} src="/eye.svg" alt="Eye" style="--rotation: {rotation}rad;"/>
 </div>
 
 <style>
@@ -54,6 +63,11 @@
     div {
         display: inline;
         width: fit-content;
+        transition: scale 0.1s linear;
+    }
+
+    div.plop {
+        scale: 1.5;
     }
 
     div.open {
