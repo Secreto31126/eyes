@@ -35,8 +35,8 @@
 <main>
     {#key trigger}
         <div>
-            {#each Array(amount) as _}
-                <Eye {mouse} />
+            {#each Array(amount) as _, index}
+                <Eye {mouse} {index} open={amount === index + 1} />
             {/each}
         </div>
     {/key}
@@ -46,5 +46,11 @@
 <style>
     :global(*) {
         cursor: url("/cursor.svg"), auto;
+    }
+
+    div {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 </style>

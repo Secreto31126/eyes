@@ -1,6 +1,6 @@
 <svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
     <g>
-        <ellipse stroke="#000" cx="5" cy="5" rx="4" ry="4" fill="none"/>
+        <ellipse stroke="#000" cx="5" cy="5" rx="4" ry="4" fill="#eee"/>
         <ellipse stroke="#000" cx="6" cy="5" rx="1" ry="1"/>
     </g>
 </svg>
