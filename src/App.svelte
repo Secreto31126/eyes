@@ -8,9 +8,18 @@
     };
 
     const mouse: Coordinates = { x: 0, y: 0 };
+
+    let blockMouse: boolean = false;
     function handleMousemove(event: { clientX: number; clientY: number; }): void {
+        if (blockMouse) return;
         mouse.x = event.clientX;
         mouse.y = event.clientY;
+    }
+
+    function handleTouchmove(event: { touches: { clientX: number; clientY: number; }[]; }): void {
+        blockMouse = true;
+        mouse.x = event.touches[0].clientX;
+        mouse.y = event.touches[0].clientY;
     }
 
     let trigger = false;
@@ -30,7 +39,7 @@
 </script>
 
 <svelte:window on:resize={reload} />
-<svelte:body on:mousemove={handleMousemove} />
+<svelte:body on:mousemove={handleMousemove} on:touchmove={handleTouchmove} />
 
 <main>
     {#key trigger}
