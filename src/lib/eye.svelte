@@ -51,7 +51,7 @@
 </script>
 
 <div class:blink class:open class:plop>
-    <img bind:this={rotator} on:click={pop} src="/eye.svg" alt="Eye" style="--rotation: {rotation}rad;"/>
+    <img bind:this={rotator} on:click|once={pop} src="/eye.svg" alt="Eye" style="--rotation: {rotation}rad;"/>
 </div>
 
 <style>
