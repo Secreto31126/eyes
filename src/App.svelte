@@ -21,9 +21,7 @@
     $: debbuger.style.left  = `${scrollX}px`;
     $: debbuger.innerText   = `X: ${point.x | 0} Y: ${point.y | 0}`;
 
-    if (import.meta.env.DEV) {
-        document.body.append(debbuger);
-    }
+    if (import.meta.env.DEV) document.body.append(debbuger);
 
     function handlePointermove(event: { clientX: number; clientY: number; }): void {
         point.x = event.clientX;
