@@ -16,17 +16,25 @@
     }
     
     const debbuger: HTMLParagraphElement = document.createElement("p");
+    debbuger.style.position = "absolute";
+    debbuger.style.top = "0";
+
+    const target: HTMLImageElement = document.createElement("img");
+    target.src = "/cursor.svg";
+    target.style.position = "absolute";
+
     if (import.meta.env.PROD) {
-        debbuger.style.position = "absolute";
-        debbuger.style.top = "0";
         document.body.append(debbuger);
+        document.body.append(target);
     }
     
     function handleMotion({ accelerationIncludingGravity: { x, y } }): void {
-        // Normalize gravity, scale to the radius of the device size, normalize (0:0) to top left corner
-        point.x = -(x / 10) * screen.availWidth / 2 + screen.availWidth;
-        point.y = -(y / 10) * screen.availHeight / 2 - screen.availHeight;
+        // Normalize gravity, normalize (0:0) to top left corner, scale to the radius of the device size
+        point.x = (-x / 10 + 1) * screen.availWidth / 2;
+        point.y = (-y / 10 - 1) * screen.availHeight / 2;
         debbuger.innerText = `${point.x | 0} ${point.y | 0}`;
+        target.style.top = point.x.toString();
+        target.style.left = point.y.toString();
     }
 
     let trigger: boolean = false;
