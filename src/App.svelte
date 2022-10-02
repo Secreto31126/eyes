@@ -31,10 +31,10 @@
     function handleMotion({ accelerationIncludingGravity: { x, y } }): void {
         // Normalize gravity, normalize (0:0) to top left corner, scale to the radius of the device size
         point.x = (-x / 10 + 1) * screen.availWidth / 2;
-        point.y = (-y / 10 - 1) * screen.availHeight / 2;
+        point.y = (y / 10 - 1) * screen.availHeight / 2;
         debbuger.innerText = `${point.x | 0} ${point.y | 0}`;
-        target.style.top = point.x.toString();
-        target.style.left = point.y.toString();
+        target.style.top = `${point.x}px`;
+        target.style.left = `${point.y}px`;
     }
 
     let trigger: boolean = false;
