@@ -7,19 +7,33 @@
         y: number
     };
 
-    const mouse: Coordinates = { x: 0, y: 0 };
+    const point: Coordinates = { x: 0, y: 0 };
+    
+    // Unfortunatelly, I can't use the coordinate object because
+    // Svelte doesn't allow objects in the window binding
+    let scrollX: number;
+    let scrollY: number;
+    
+    const debbuger: HTMLParagraphElement = document.createElement("p");
 
-    let blockMouse: boolean = false;
-    function handleMousemove(event: { clientX: number; clientY: number; }): void {
-        if (blockMouse) return;
-        mouse.x = event.clientX;
-        mouse.y = event.clientY;
+    debbuger.style.position = "absolute";
+    $: debbuger.style.top   = `${scrollY}px`;
+    $: debbuger.style.left  = `${scrollX}px`;
+    $: debbuger.innerText   = `X: ${point.x | 0} Y: ${point.y | 0}`;
+
+    if (import.meta.env.PROD) {
+        document.body.append(debbuger);
     }
 
-    function handleTouchmove(event: { touches: { clientX: number; clientY: number; }[]; }): void {
-        blockMouse = true;
-        mouse.x = event.touches[0].clientX;
-        mouse.y = event.touches[0].clientY;
+    function handlePointermove(event: { clientX: number; clientY: number; }): void {
+        point.x = event.clientX;
+        point.y = event.clientY;
+    }
+    
+    function handleMotion({ accelerationIncludingGravity: { x, y } }): void {
+        // Normalize gravity, normalize (0:0) to top left corner, scale to the radius of the device size, add the scrolled distance
+        point.x = (-x / 10 + 1) * screen.availWidth / 2 - scrollX;
+        point.y = (y / 10 + 1) * screen.availHeight / 2 + scrollY;
     }
 
     let trigger: boolean = false;
@@ -45,16 +59,30 @@
     }
 
     $: if (amount === $active) $loaded = true;
+
+    const mouse: boolean = matchMedia('(pointer:fine)').matches;
+
+    // If it has a mouse
+    if (mouse) window.addEventListener("pointermove", handlePointermove);
+
+    // If it doesn't have a mouse BUT has a gyroscope
+    else if (DeviceMotionEvent) window.addEventListener("devicemotion", handleMotion);
+
+    // Else non-supported device
+    else document.body.innerText = "Your device isn't supported, sorry!";
 </script>
 
-<svelte:window on:resize={reload} />
-<svelte:body on:mousemove={handleMousemove} on:touchmove={handleTouchmove} />
+<svelte:window on:resize={reload} bind:scrollX={scrollX} bind:scrollY={scrollY} />
+
+{#if !mouse}
+    <img src="/cursor.svg" alt="Eye" style="--top: {point.y}px; --left: {point.x}px" />
+{/if}
 
 <main>
     {#key trigger}
         <div>
             {#each Array(amount) as _, index}
-                <Eye {mouse} {index} open={added && amount === index + 1} on:pop={less} />
+                <Eye {point} {index} open={added && amount === index + 1} on:pop={less} />
             {/each}
         </div>
     {/key}
@@ -70,5 +98,12 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+    }
+
+    img {
+        position: absolute;
+        top: var(--top);
+        left: var(--left);
+        z-index: 999;
     }
 </style>

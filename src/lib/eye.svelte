@@ -7,7 +7,7 @@
         y: number
     };
 
-    export let mouse: Coordinates;
+    export let point: Coordinates;
     export let index: number;
     export let open: boolean;
     
@@ -20,7 +20,7 @@
         center.y = rect.top + rect.height / 2;
     }
 
-    const interval: number = 6 + index;
+    const interval: number = 16 + index;
 
     let blink: boolean = false;
     function timer(seconds: number): void {
@@ -38,7 +38,7 @@
     });
 
     $: if ($loaded) getCenter();
-    $: rotation = Math.atan2(mouse.y - center.y, mouse.x - center.x);
+    $: rotation = Math.atan2(point.y - center.y, point.x - center.x);
 
     let plop: boolean = false;
     const dispatch = createEventDispatcher();
@@ -105,7 +105,7 @@
     }
     
     div.blink {
-        animation: blink 1.5s linear;
+        animation: blink 0.5s linear;
     }
 
     @keyframes blink {
