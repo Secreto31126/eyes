@@ -7,27 +7,17 @@
         y: number
     };
 
-    const mouse: Coordinates = { x: 0, y: 0 };
+    const point: Coordinates = { x: 0, y: 0 };
 
     function handlePointermove(event: { clientX: number; clientY: number; }): void {
-        // window.removeEventListener("devicemotion", handleMotion);
-
-        mouse.x = event.clientX;
-        mouse.y = event.clientY;
+        point.x = event.clientX;
+        point.y = event.clientY;
     }
     
     function handleMotion({ accelerationIncludingGravity: { x, y } }): void {
-        // If any of the parameters is missing, assume as non available
-        if (x === null || y === null) {
-            window.removeEventListener("devicemotion", handleMotion);
-            return;
-        }
-
-        mouse.x = -x;
-        mouse.y = -y;
+        point.x = -(x + Math.sign(x) * screen.width / 2);
+        point.y = -(y + Math.sign(y) * screen.height / 2);
     }
-
-    if (DeviceMotionEvent) window.addEventListener("devicemotion", handleMotion);
 
     let trigger: boolean = false;
     function reload(): void {
@@ -52,15 +42,24 @@
     }
 
     $: if (amount === $active) $loaded = true;
+
+    // If it has a mouse
+    if (matchMedia('(pointer:fine)').matches) window.addEventListener("pointermove", handlePointermove);
+
+    // If it doesn't have a mouse BUT has a gyroscope
+    else if (DeviceMotionEvent) window.addEventListener("devicemotion", handleMotion);
+
+    // Else non-supported device
+    else document.body.innerText = "Your device isn't supported, sorry!";
 </script>
 
-<svelte:window on:resize={reload} on:pointermove={handlePointermove} />
+<svelte:window on:resize={reload} />
 
 <main>
     {#key trigger}
         <div>
             {#each Array(amount) as _, index}
-                <Eye {mouse} {index} open={added && amount === index + 1} on:pop={less} />
+                <Eye {point} {index} open={added && amount === index + 1} on:pop={less} />
             {/each}
         </div>
     {/key}
