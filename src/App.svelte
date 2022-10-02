@@ -23,8 +23,9 @@
     }
     
     function handleMotion({ accelerationIncludingGravity: { x, y } }): void {
-        point.x = -(x + Math.sign(x) * screen.width / 2);
-        point.y = -(y + Math.sign(y) * screen.height / 2);
+        // Normalize gravity
+        point.x = -(x / 10) * screen.width / 1.8;
+        point.y = -(y / 10) * screen.height / 1.8;
         debbuger.innerText = `${point.x} ${point.y}`;
     }
 
