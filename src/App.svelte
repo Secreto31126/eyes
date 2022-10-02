@@ -9,18 +9,25 @@
 
     const mouse: Coordinates = { x: 0, y: 0 };
 
-    let blockMouse: boolean = false;
-    function handleMousemove(event: { clientX: number; clientY: number; }): void {
-        if (blockMouse) return;
+    function handlePointermove(event: { clientX: number; clientY: number; }): void {
+        window.removeEventListener("deviceorientation", handleOrientation);
+
         mouse.x = event.clientX;
         mouse.y = event.clientY;
     }
-
-    function handleTouchmove(event: { touches: { clientX: number; clientY: number; }[]; }): void {
-        blockMouse = true;
-        mouse.x = event.touches[0].clientX;
-        mouse.y = event.touches[0].clientY;
+    
+    function handleOrientation({ alpha, beta, gamma }): void {
+        if (alpha && beta && gamma) {
+            document.body.innerHTML = `X: ${beta}\nY: ${gamma}\nZ: ${alpha}`;
+            mouse.x = beta;
+            mouse.y = gamma;
+        } else {
+            // If any of the parameters is missing, assume as non available
+            window.removeEventListener("deviceorientation", handleOrientation);
+        }
     }
+
+    if (DeviceMotionEvent) window.addEventListener("deviceorientation", handleOrientation);
 
     let trigger: boolean = false;
     function reload(): void {
@@ -47,8 +54,7 @@
     $: if (amount === $active) $loaded = true;
 </script>
 
-<svelte:window on:resize={reload} />
-<svelte:body on:mousemove={handleMousemove} on:touchmove={handleTouchmove} />
+<svelte:window on:resize={reload} on:pointermove={handlePointermove} />
 
 <main>
     {#key trigger}

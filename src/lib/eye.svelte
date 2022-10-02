@@ -20,7 +20,7 @@
         center.y = rect.top + rect.height / 2;
     }
 
-    const interval: number = 6 + index;
+    const interval: number = 16 + index;
 
     let blink: boolean = false;
     function timer(seconds: number): void {
@@ -105,7 +105,7 @@
     }
     
     div.blink {
-        animation: blink 1.5s linear;
+        animation: blink 0.5s linear;
     }
 
     @keyframes blink {
