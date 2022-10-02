@@ -13,24 +13,25 @@
     // because Svelte doesn't allow it in the window binding
     let scrollX: number = 0;
     let scrollY: number = 0;
-
-    function handlePointermove(event: { clientX: number; clientY: number; }): void {
-        point.x = event.clientX;
-        point.y = event.clientY;
-        debbuger.innerText = `${point.x} ${point.y}`;
-    }
     
     const debbuger: HTMLParagraphElement = document.createElement("p");
     debbuger.style.position = "absolute";
     debbuger.style.top = "0";
 
+    $: debbuger.innerText = `X: ${point.x | 0} Y: ${point.y | 0}`;
+
     if (import.meta.env.PROD) {
         document.body.append(debbuger);
+    }
+
+    function handlePointermove(event: { clientX: number; clientY: number; }): void {
+        point.x = event.clientX;
+        point.y = event.clientY;
     }
     
     function handleMotion({ accelerationIncludingGravity: { x, y } }): void {
         // Normalize gravity, normalize (0:0) to top left corner, scale to the radius of the device size, add the scrolled distance
-        point.x = (-x / 10 + 1) * screen.availWidth / 2 + scrollX;
+        point.x = (-x / 10 + 1) * screen.availWidth / 2 - scrollX;
         point.y = (y / 10 + 1) * screen.availHeight / 2 + scrollY;
     }
 
@@ -102,5 +103,6 @@
         position: absolute;
         top: var(--top);
         left: var(--left);
+        z-index: 999;
     }
 </style>
