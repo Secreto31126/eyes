@@ -17,7 +17,7 @@
     }
     
     function handleOrientation({ alpha, beta, gamma }): void {
-        if (alpha && beta && gamma) {
+        if (alpha !== null && beta !== null && gamma !== null) {
             document.body.innerHTML = `X: ${beta}\nY: ${gamma}\nZ: ${alpha}`;
             mouse.x = beta;
             mouse.y = gamma;
