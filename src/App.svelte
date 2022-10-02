@@ -21,7 +21,7 @@
     $: debbuger.style.left  = `${scrollX}px`;
     $: debbuger.innerText   = `X: ${point.x | 0} Y: ${point.y | 0}`;
 
-    if (import.meta.env.PROD) {
+    if (import.meta.env.DEV) {
         document.body.append(debbuger);
     }
 
