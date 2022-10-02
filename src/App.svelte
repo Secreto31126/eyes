@@ -11,14 +11,15 @@
     
     // Unfortunatelly, I can't use the coordinate object
     // because Svelte doesn't allow it in the window binding
-    let scrollX: number = 0;
-    let scrollY: number = 0;
+    let scrollX: number;
+    let scrollY: number;
     
     const debbuger: HTMLParagraphElement = document.createElement("p");
-    debbuger.style.position = "absolute";
-    debbuger.style.top = "0";
 
-    $: debbuger.innerText = `X: ${point.x | 0} Y: ${point.y | 0}`;
+    debbuger.style.position = "absolute";
+    $: debbuger.style.top   = `${scrollY}px`;
+    $: debbuger.style.left  = `${scrollX}px`;
+    $: debbuger.innerText   = `X: ${point.x | 0} Y: ${point.y | 0}`;
 
     if (import.meta.env.PROD) {
         document.body.append(debbuger);
