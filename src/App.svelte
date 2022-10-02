@@ -12,11 +12,20 @@
     function handlePointermove(event: { clientX: number; clientY: number; }): void {
         point.x = event.clientX;
         point.y = event.clientY;
+        debbuger.innerText = `${point.x} ${point.y}`;
+    }
+    
+    const debbuger: HTMLParagraphElement = document.createElement("p");
+    if (import.meta.env.PROD) {
+        debbuger.style.position = "absolute";
+        debbuger.style.top = "0";
+        document.body.append(debbuger);
     }
     
     function handleMotion({ accelerationIncludingGravity: { x, y } }): void {
         point.x = -(x + Math.sign(x) * screen.width / 2);
         point.y = -(y + Math.sign(y) * screen.height / 2);
+        debbuger.innerText = `${point.x} ${point.y}`;
     }
 
     let trigger: boolean = false;
