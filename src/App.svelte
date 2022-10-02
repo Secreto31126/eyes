@@ -8,6 +8,11 @@
     };
 
     const point: Coordinates = { x: 0, y: 0 };
+    
+    // Unfortunatelly, I can't use the coordinate object
+    // because Svelte doesn't allow it in the window binding
+    let scrollX: number = 0;
+    let scrollY: number = 0;
 
     function handlePointermove(event: { clientX: number; clientY: number; }): void {
         point.x = event.clientX;
@@ -24,9 +29,9 @@
     }
     
     function handleMotion({ accelerationIncludingGravity: { x, y } }): void {
-        // Normalize gravity, normalize (0:0) to top left corner, scale to the radius of the device size
-        point.x = (-x / 10 + 1) * screen.availWidth / 2;
-        point.y = (y / 10 + 1) * screen.availHeight / 2;
+        // Normalize gravity, normalize (0:0) to top left corner, scale to the radius of the device size, add the scrolled distance
+        point.x = (-x / 10 + 1) * screen.availWidth / 2 + scrollX;
+        point.y = (y / 10 + 1) * screen.availHeight / 2 + scrollY;
     }
 
     let trigger: boolean = false;
@@ -65,7 +70,7 @@
     else document.body.innerText = "Your device isn't supported, sorry!";
 </script>
 
-<svelte:window on:resize={reload} />
+<svelte:window on:resize={reload} bind:scrollX={scrollX} bind:scrollY={scrollY} />
 
 {#if !mouse}
     <img src="/cursor.svg" alt="Eye" style="--top: {point.y}px; --left: {point.x}px" />
