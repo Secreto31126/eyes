@@ -10,24 +10,24 @@
     const mouse: Coordinates = { x: 0, y: 0 };
 
     function handlePointermove(event: { clientX: number; clientY: number; }): void {
-        window.removeEventListener("deviceorientation", handleOrientation);
+        // window.removeEventListener("devicemotion", handleMotion);
 
         mouse.x = event.clientX;
         mouse.y = event.clientY;
     }
     
-    function handleOrientation({ alpha, beta, gamma }): void {
-        if (alpha !== null && beta !== null && gamma !== null) {
-            document.body.innerHTML = `X: ${beta | 0}<br><br>Y: ${gamma | 0}<br><br>Z: ${alpha | 0}`;
-            mouse.x = beta;
-            mouse.y = gamma;
-        } else {
-            // If any of the parameters is missing, assume as non available
-            window.removeEventListener("deviceorientation", handleOrientation);
+    function handleMotion({ accelerationIncludingGravity: { x, y } }): void {
+        // If any of the parameters is missing, assume as non available
+        if (x === null || y === null) {
+            window.removeEventListener("devicemotion", handleMotion);
+            return;
         }
+
+        mouse.x = -x;
+        mouse.y = -y;
     }
 
-    if (DeviceMotionEvent) window.addEventListener("deviceorientation", handleOrientation);
+    if (DeviceMotionEvent) window.addEventListener("devicemotion", handleMotion);
 
     let trigger: boolean = false;
     function reload(): void {
