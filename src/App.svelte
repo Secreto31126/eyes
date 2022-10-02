@@ -9,8 +9,8 @@
 
     const point: Coordinates = { x: 0, y: 0 };
     
-    // Unfortunatelly, I can't use the coordinate object
-    // because Svelte doesn't allow it in the window binding
+    // Unfortunatelly, I can't use the coordinate object because
+    // Svelte doesn't allow objects in the window binding
     let scrollX: number;
     let scrollY: number;
     
