@@ -19,22 +19,14 @@
     debbuger.style.position = "absolute";
     debbuger.style.top = "0";
 
-    const target: HTMLImageElement = document.createElement("img");
-    target.style.position = "absolute";
-    target.src = "/cursor.svg";
-
     if (import.meta.env.PROD) {
         document.body.append(debbuger);
-        document.body.append(target);
     }
     
     function handleMotion({ accelerationIncludingGravity: { x, y } }): void {
         // Normalize gravity, normalize (0:0) to top left corner, scale to the radius of the device size
         point.x = (-x / 10 + 1) * screen.availWidth / 2;
         point.y = (y / 10 + 1) * screen.availHeight / 2;
-        debbuger.innerText = `${point.x | 0} ${point.y | 0}`;
-        target.style.left = `${point.x}px`;
-        target.style.top = `${point.y}px`;
     }
 
     let trigger: boolean = false;
@@ -61,8 +53,10 @@
 
     $: if (amount === $active) $loaded = true;
 
+    const mouse: boolean = matchMedia('(pointer:fine)').matches;
+
     // If it has a mouse
-    if (matchMedia('(pointer:fine)').matches) window.addEventListener("pointermove", handlePointermove);
+    if (mouse) window.addEventListener("pointermove", handlePointermove);
 
     // If it doesn't have a mouse BUT has a gyroscope
     else if (DeviceMotionEvent) window.addEventListener("devicemotion", handleMotion);
@@ -72,6 +66,10 @@
 </script>
 
 <svelte:window on:resize={reload} />
+
+{#if !mouse}
+    <img src="/cursor.svg" alt="Eye" style="--top: {point.y}px; --left: {point.x}px" />
+{/if}
 
 <main>
     {#key trigger}
@@ -93,5 +91,11 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+    }
+
+    img {
+        position: absolute;
+        top: var(--top);
+        left: var(--left);
     }
 </style>
