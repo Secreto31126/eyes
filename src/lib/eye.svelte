@@ -11,13 +11,19 @@
     export let index: number;
     export let open: boolean;
     
+    const dispatch = createEventDispatcher();
+    
     let rotator: HTMLImageElement;
     const center: Coordinates = { x: 0, y: 0 };
 
+    let disabled: boolean = true;
     function getCenter(): void {
         const rect = rotator.getBoundingClientRect();
         center.x = rect.left + rect.width / 2;
         center.y = rect.top + rect.height / 2;
+
+        // Prevent accidental pops
+        setTimeout(() => disabled = false, 1400);
     }
 
     const interval: number = 16 + index;
@@ -41,17 +47,18 @@
     $: rotation = Math.atan2(point.y - center.y, point.x - center.x);
 
     let plop: boolean = false;
-    const dispatch = createEventDispatcher();
     function pop(): void {
+        if (disabled) return;
+        else disabled = true;
         plop = true;
         setTimeout(() => {
             dispatch("pop");
-        }, 0.1 * 1000);
+        }, 100);
     }
 </script>
 
 <div class:blink class:open class:plop>
-    <img bind:this={rotator} on:click|once={pop} src="/eye.svg" alt="Eye" style="--rotation: {rotation}rad;"/>
+    <img bind:this={rotator} on:click={pop} src="/eye.svg" alt="Eye" style="--rotation: {rotation}rad;"/>
 </div>
 
 <style>
