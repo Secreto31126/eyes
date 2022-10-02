@@ -33,8 +33,8 @@
         point.x = (-x / 10 + 1) * screen.availWidth / 2;
         point.y = (y / 10 + 1) * screen.availHeight / 2;
         debbuger.innerText = `${point.x | 0} ${point.y | 0}`;
-        target.style.top = `${point.x}px`;
-        target.style.left = `${point.y}px`;
+        target.style.left = `${point.x}px`;
+        target.style.top = `${point.y}px`;
     }
 
     let trigger: boolean = false;
